@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "proto;user";
+
+service User {
+	rpc Login (RequestLogin) returns (ResponseLogin) {}
+}
+
+
+message RequestLogin {
+	string name = 1;
+	string password = 2;
+}
+
+message ResponseLogin {
+	int32 code = 1;
+	string message = 2;
+	int64 user_id = 3;
+}
+

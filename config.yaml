@@ -1,0 +1,15 @@
+db:
+  host: 127.0.0.1:3306
+  user: root
+  password: 123456
+  dbname: video
+
+log:
+  path: ./video.log
+
+mode: debug
+
+server:
+  port: 49152
+  assets_path: .
+  secret: 123456
