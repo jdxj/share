@@ -6,8 +6,8 @@ import (
 
 	"github.com/jdxj/logger"
 	user "github.com/jdxj/share/user/proto"
+	"github.com/jdxj/share/video/remote"
 	"github.com/jdxj/share/video/server/api"
-	"github.com/jdxj/share/video/service"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -27,7 +27,7 @@ func AddSession(c *gin.Context) {
 		Name:     loginInfo.Name,
 		Password: loginInfo.Password,
 	}
-	loginResp, err := service.UserService.Login(context.TODO(), req)
+	loginResp, err := remote.UserService.Login(context.TODO(), req)
 	if err != nil {
 		logger.Errorf("Login: %s", err)
 		resp := api.NewResponse(123, "invalid param", nil)

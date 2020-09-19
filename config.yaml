@@ -11,5 +11,5 @@ mode: debug
 
 server:
   port: 49152
-  assets_path: .
+  assets_path: ./assets
   secret: 123456

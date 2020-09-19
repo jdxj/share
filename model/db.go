@@ -24,3 +24,7 @@ func InitDB(user, password, host, dbName string) error {
 	mysql = db
 	return db.Ping()
 }
+
+func CloseDB() error {
+	return mysql.Close()
+}

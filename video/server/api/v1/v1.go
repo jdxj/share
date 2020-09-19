@@ -14,11 +14,10 @@ import (
 
 func RegisterAPI(r *gin.RouterGroup) {
 	// .
-	r.POST("sessions", AddSession)
+	//r.POST("sessions", AddSession)
 
 	// v1
 	v1Group := r.Group("v1")
-	v1Group.Use(CheckLogin)
 	{
 		v1Group.GET("", Home)
 		v1Group.Static("assets", config.Server().AssetsPath)
@@ -30,6 +29,8 @@ func RegisterAPI(r *gin.RouterGroup) {
 	{
 
 		videosGroup.POST("", UploadVideo)
+		videosGroup.GET("", ListVideo)
+		videosGroup.GET(":id", GetVideo)
 	}
 }
 

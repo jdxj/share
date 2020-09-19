@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter() *gin.Engine {
+func newRouter() *gin.Engine {
 	gin.SetMode(config.Mode())
 	r := gin.Default()
 	r.MaxMultipartMemory = 8 << 20

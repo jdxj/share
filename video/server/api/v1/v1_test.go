@@ -14,3 +14,12 @@ func TestFilePathJoin(t *testing.T) {
 	path, _ = filepath.Abs("v1_test.go")
 	fmt.Printf("%s\n", path)
 }
+
+func TestAbs(t *testing.T) {
+	path, err := filepath.Abs("./assets")
+	if err != nil {
+		t.Errorf("%s\n", err)
+	}
+	fmt.Printf("%s\n", path)
+
+}

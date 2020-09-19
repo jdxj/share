@@ -14,16 +14,12 @@ var (
 	server *http.Server
 )
 
-func initServer() {
+func StartServer() error {
 	serverCfg := config.Server()
 	server = &http.Server{
-		Addr: fmt.Sprintf("%s:%s", "127.0.0.1", serverCfg.Port),
-		//Handler: NewRouter(),
+		Addr:    fmt.Sprintf("%s:%s", "127.0.0.1", serverCfg.Port),
+		Handler: newRouter(),
 	}
-}
-
-func StartServer() (err error) {
-	initServer()
 	logger.Infof("initServer success")
 
 	go func() {
@@ -37,10 +33,11 @@ func StartServer() (err error) {
 
 		logger.Infof("ListenAndServe after")
 	}()
-	return
+
+	return nil
 }
 
-func StopServer() (err error) {
+func StopServer() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
