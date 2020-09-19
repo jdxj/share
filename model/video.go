@@ -9,7 +9,7 @@ const (
 )
 
 func GetVideos(page int) ([]*Video, error) {
-	query := fmt.Sprintf(`select id,title,user_id
+	query := fmt.Sprintf(`select id,title,path,user_id
 from %s
 order by id limit ?,?`, TNVideo)
 	rows, err := mysql.Query(query, page*countPage, countPage)
@@ -21,7 +21,7 @@ order by id limit ?,?`, TNVideo)
 	var vides []*Video
 	for rows.Next() {
 		v := &Video{}
-		err := rows.Scan(&v.ID, &v.Title, &v.UserID)
+		err := rows.Scan(&v.ID, &v.Title, &v.Path, &v.UserID)
 		if err != nil {
 			return nil, err
 		}
@@ -30,7 +30,7 @@ order by id limit ?,?`, TNVideo)
 	return vides, nil
 }
 
-func GetVideo(id int) (*Video, error) {
+func GetVideoByID(id int) (*Video, error) {
 	query := fmt.Sprintf(`select id,title,path,user_id
 from %s where id=?`, TNVideo)
 	row := mysql.QueryRow(query, id)

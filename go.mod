@@ -12,6 +12,7 @@ require (
 	github.com/jdxj/logger v0.1.0
 	github.com/micro/go-micro/v3 v3.0.0-beta.2.0.20200911124113-3bb76868d194
 	github.com/micro/micro/v3 v3.0.0-beta.4
+	github.com/satori/go.uuid v1.2.0
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/yaml.v2 v2.3.0
 )

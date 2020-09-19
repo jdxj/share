@@ -20,6 +20,7 @@ func RegisterAPI(r *gin.RouterGroup) {
 	v1Group := r.Group("v1")
 	{
 		v1Group.GET("", Home)
+		// todo: 资源也需要权鉴
 		v1Group.Static("assets", config.Server().AssetsPath)
 	}
 
@@ -27,7 +28,6 @@ func RegisterAPI(r *gin.RouterGroup) {
 	videosGroup := v1Group.Group("videos")
 	// videosGroup.Use()
 	{
-
 		videosGroup.POST("", UploadVideo)
 		videosGroup.GET("", ListVideo)
 		videosGroup.GET(":id", GetVideo)

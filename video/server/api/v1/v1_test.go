@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 	"testing"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 func TestFilePathJoin(t *testing.T) {
@@ -22,4 +24,8 @@ func TestAbs(t *testing.T) {
 	}
 	fmt.Printf("%s\n", path)
 
+}
+
+func TestUUID(t *testing.T) {
+	fmt.Printf("%s\n", uuid.NewV4().String())
 }
