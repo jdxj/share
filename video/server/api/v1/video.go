@@ -83,7 +83,12 @@ func ListVideo(c *gin.Context) {
 		return
 	}
 
-	resp := api.NewResponse(0, "video list", videos)
+	p := &api.Page{
+		Num:     page,
+		HasNext: len(videos) >= model.CountPage,
+		Data:    videos,
+	}
+	resp := api.NewResponse(0, "video list", p)
 	c.JSON(http.StatusOK, resp)
 }
 

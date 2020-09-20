@@ -17,7 +17,7 @@ var (
 func StartServer() error {
 	serverCfg := config.Server()
 	server = &http.Server{
-		Addr:    fmt.Sprintf("%s:%s", "127.0.0.1", serverCfg.Port),
+		Addr:    fmt.Sprintf("%s:%s", "", serverCfg.Port),
 		Handler: newRouter(),
 	}
 	logger.Infof("initServer success")

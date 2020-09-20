@@ -5,14 +5,14 @@ import "fmt"
 const (
 	TNVideo = "videos"
 
-	countPage = 20
+	CountPage = 20
 )
 
 func GetVideos(page int) ([]*Video, error) {
 	query := fmt.Sprintf(`select id,title,path,user_id
 from %s
 order by id limit ?,?`, TNVideo)
-	rows, err := mysql.Query(query, page*countPage, countPage)
+	rows, err := mysql.Query(query, page*CountPage, CountPage)
 	if err != nil {
 		return nil, err
 	}
@@ -39,10 +39,10 @@ from %s where id=?`, TNVideo)
 }
 
 type Video struct {
-	ID     int
-	Title  string
-	Path   string
-	UserID int
+	ID     int    `json:"id"`
+	Title  string `json:"title"`
+	Path   string `json:"path"`
+	UserID int    `json:"user_id"`
 }
 
 func (v *Video) Insert() error {

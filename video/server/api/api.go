@@ -42,3 +42,9 @@ type User struct {
 	Name     string `form:"name"`
 	Password string `form:"pass"`
 }
+
+type Page struct {
+	Num     int         `json:"num"`
+	HasNext bool        `json:"has_next"`
+	Data    interface{} `json:"data"`
+}
