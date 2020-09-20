@@ -1,9 +1,17 @@
 package model
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"strings"
+)
 
 const (
 	TNUser = "users"
+)
+
+var (
+	ErrDuplicateName = errors.New("duplicate name")
 )
 
 func GetUser(id int) *User {
@@ -19,6 +27,22 @@ func LoginCheck(name, password string) (*User, error) {
 }
 
 type User struct {
-	ID   int
-	Name string
+	ID       int64
+	Name     string
+	Password string
+}
+
+func (u *User) Insert() error {
+	query := fmt.Sprintf(`insert into %s (name,password)
+values (?,?)`, TNUser)
+	res, err := mysql.Exec(query, u.Name, u.Password)
+	if err == nil {
+		u.ID, err = res.LastInsertId()
+		return err
+	}
+
+	if strings.Index(err.Error(), "Duplicate entry") >= 0 {
+		return ErrDuplicateName
+	}
+	return err
 }

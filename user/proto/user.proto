@@ -6,8 +6,8 @@ option go_package = "proto;user";
 
 service User {
 	rpc Login (RequestLogin) returns (ResponseLogin) {}
+	rpc SignUp (RequestLogin) returns (ResponseLogin) {}
 }
-
 
 message RequestLogin {
 	string name = 1;
@@ -19,4 +19,3 @@ message ResponseLogin {
 	string message = 2;
 	int64 user_id = 3;
 }
-
