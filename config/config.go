@@ -38,12 +38,17 @@ func Server() server {
 	return *cfg.Server
 }
 
+func Email() email {
+	return *cfg.Email
+}
+
 type configuration struct {
 	DB   *db     `yaml:"db"`
 	Mode *string `yaml:"mode"`
 	Log  *log    `yaml:"log"`
 
 	Server *server `yaml:"server"`
+	Email  *email  `yaml:"email"`
 }
 
 type db struct {
@@ -61,4 +66,8 @@ type server struct {
 	Port       string `yaml:"port"`
 	AssetsPath string `yaml:"assets_path"`
 	Secret     string `yaml:"secret"`
+}
+
+type email struct {
+	Token string `json:"token"`
 }

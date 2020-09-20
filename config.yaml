@@ -13,3 +13,6 @@ server:
   port: 49152
   assets_path: ./assets
   secret: 123456
+
+email:
+  token:
