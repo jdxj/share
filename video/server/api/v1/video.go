@@ -7,13 +7,12 @@ import (
 	"path/filepath"
 	"strconv"
 
-	email "github.com/jdxj/share/email/proto"
-	"github.com/jdxj/share/video/remote"
-
 	"github.com/jdxj/logger"
 	"github.com/jdxj/share/config"
+	email "github.com/jdxj/share/email/proto"
 	"github.com/jdxj/share/model"
-	"github.com/jdxj/share/video/server/api"
+	"github.com/jdxj/share/video/remote"
+	"github.com/jdxj/share/video/server/api/comm"
 
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
@@ -21,10 +20,14 @@ import (
 
 // curl -X POST http://localhost:49152/api/v1/videos -F "file=@./mv.mp4" -H "Content-Type: multipart/form-data"
 func UploadVideo(c *gin.Context) {
+	userState, _ := c.Get(comm.UserState)
+	uc := userState.(*comm.UserClaims)
+	logger.Debugf("id: %d, name: %s", uc.ID, uc.Name)
+
 	file, err := c.FormFile("file")
 	if err != nil {
 		logger.Errorf("FormFile: %s", err)
-		resp := api.NewResponse(123, "invalid param", nil)
+		resp := comm.NewResponse(123, "invalid param", nil)
 		c.JSON(http.StatusBadRequest, resp)
 		return
 	}
@@ -32,7 +35,7 @@ func UploadVideo(c *gin.Context) {
 	prefix, err := filepath.Abs(config.Server().AssetsPath)
 	if err != nil {
 		logger.Errorf("Abs: %s", err)
-		resp := api.NewResponse(123, "unknown err", nil)
+		resp := comm.NewResponse(123, "unknown err", nil)
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
@@ -42,7 +45,7 @@ func UploadVideo(c *gin.Context) {
 	err = c.SaveUploadedFile(file, filePath)
 	if err != nil {
 		logger.Errorf("SaveUploadedFile: %s", err)
-		resp := api.NewResponse(123, "can not save file", nil)
+		resp := comm.NewResponse(123, "can not save file", nil)
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
@@ -50,12 +53,12 @@ func UploadVideo(c *gin.Context) {
 	v := &model.Video{
 		Title:  file.Filename,
 		Path:   fileName,
-		UserID: 1, // todo: 权鉴后使用上传者 id
+		UserID: uc.ID,
 	}
 	err = v.Insert()
 	if err != nil {
 		logger.Errorf("v.Insert: %s", err)
-		resp := api.NewResponse(123, "invalid param", nil)
+		resp := comm.NewResponse(123, "invalid param", nil)
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
@@ -73,27 +76,21 @@ func UploadVideo(c *gin.Context) {
 	respEmail, err := remote.EmailService.Send(context.TODO(), reqEmail)
 	if err != nil {
 		logger.Errorf("EmailService.Send: %s", err)
-		resp := api.NewResponse(123, "send email failed", err)
+		resp := comm.NewResponse(123, "send email failed", err)
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
 
-	resp := api.NewResponse(0, "upload ok", respEmail)
+	resp := comm.NewResponse(0, "upload ok", respEmail)
 	c.JSON(http.StatusOK, resp)
 }
 
 func ListVideo(c *gin.Context) {
-	pageStr := c.Query("page")
-	if pageStr == "" {
-		resp := api.NewResponse(123, "miss 'page' query param", nil)
-		c.JSON(http.StatusBadRequest, resp)
-		return
-	}
-
+	pageStr := c.DefaultQuery("page", "0")
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
 		logger.Errorf("ListVide Atoi: %s", err)
-		resp := api.NewResponse(123, "invalid param", nil)
+		resp := comm.NewResponse(123, "invalid param", nil)
 		c.JSON(http.StatusBadRequest, resp)
 		return
 	}
@@ -101,17 +98,17 @@ func ListVideo(c *gin.Context) {
 	videos, err := model.GetVideos(page)
 	if err != nil {
 		logger.Errorf("GetVideos: %s", err)
-		resp := api.NewResponse(123, "invalid param", nil)
+		resp := comm.NewResponse(123, "invalid param", nil)
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
 
-	p := &api.Page{
-		Num:     page,
+	p := &comm.Page{
+		Page:    page,
 		HasNext: len(videos) >= model.CountPage,
 		Data:    videos,
 	}
-	resp := api.NewResponse(0, "video list", p)
+	resp := comm.NewResponse(0, "video list", p)
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -120,7 +117,7 @@ func GetVideo(c *gin.Context) {
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		logger.Errorf("GetVideo Atoi: %s", err)
-		resp := api.NewResponse(123, "invalid param", nil)
+		resp := comm.NewResponse(123, "invalid param", nil)
 		c.JSON(http.StatusBadRequest, resp)
 		return
 	}
@@ -128,11 +125,11 @@ func GetVideo(c *gin.Context) {
 	v, err := model.GetVideoByID(id)
 	if err != nil {
 		logger.Errorf("model.GetVideoByID: %s", err)
-		resp := api.NewResponse(123, "invalid param", nil)
+		resp := comm.NewResponse(123, "invalid param", nil)
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
 
-	resp := api.NewResponse(0, "video", v)
+	resp := comm.NewResponse(0, "video", v)
 	c.JSON(http.StatusOK, resp)
 }

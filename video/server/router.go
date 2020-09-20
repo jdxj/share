@@ -1,10 +1,9 @@
 package server
 
 import (
-	"github.com/jdxj/share/config"
-	v1 "github.com/jdxj/share/video/server/api/v1"
-
 	"github.com/gin-gonic/gin"
+	"github.com/jdxj/share/config"
+	"github.com/jdxj/share/video/server/api"
 )
 
 func newRouter() *gin.Engine {
@@ -13,7 +12,6 @@ func newRouter() *gin.Engine {
 	r.MaxMultipartMemory = 8 << 20
 
 	apiGroup := r.Group("api")
-	v1.RegisterAPI(apiGroup)
-
+	api.RegisterAPI(apiGroup)
 	return r
 }
