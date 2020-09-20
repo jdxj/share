@@ -10,6 +10,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.4.2
 	github.com/jdxj/logger v0.1.0
+	github.com/jordan-wright/email v4.0.1-0.20200917010138-e1c00e156980+incompatible
 	github.com/micro/go-micro/v3 v3.0.0-beta.2.0.20200911124113-3bb76868d194
 	github.com/micro/micro/v3 v3.0.0-beta.4
 	github.com/satori/go.uuid v1.2.0

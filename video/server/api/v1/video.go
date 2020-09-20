@@ -1,9 +1,14 @@
 package v1
 
 import (
+	"context"
+	"fmt"
 	"net/http"
 	"path/filepath"
 	"strconv"
+
+	email "github.com/jdxj/share/email/proto"
+	"github.com/jdxj/share/video/remote"
 
 	"github.com/jdxj/logger"
 	"github.com/jdxj/share/config"
@@ -55,7 +60,25 @@ func UploadVideo(c *gin.Context) {
 		return
 	}
 
-	resp := api.NewResponse(0, "upload ok", nil)
+	reqEmail := &email.RequestEmail{
+		Token:      "123",
+		Subject:    "new video",
+		Recipients: []string{"985759262@qq.com"}, // todo: 订阅者
+		Type:       1,
+		Content: []byte(fmt.Sprintf("%s:%s/api/v1/assets/%s",
+			config.Server().Domain, config.Server().Port, fileName)),
+	}
+
+	// todo: rabbitmq?
+	respEmail, err := remote.EmailService.Send(context.TODO(), reqEmail)
+	if err != nil {
+		logger.Errorf("EmailService.Send: %s", err)
+		resp := api.NewResponse(123, "send email failed", err)
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	resp := api.NewResponse(0, "upload ok", respEmail)
 	c.JSON(http.StatusOK, resp)
 }
 

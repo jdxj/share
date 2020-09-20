@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/jdxj/logger"
 	"github.com/jdxj/share/config"
+	email "github.com/jdxj/share/email/proto"
 	"github.com/jdxj/share/model"
 	user "github.com/jdxj/share/user/proto"
 	"github.com/jdxj/share/video/remote"
@@ -40,6 +41,7 @@ func main() {
 	)
 
 	remote.UserService = user.NewUserService("user", srv.Client())
+	remote.EmailService = email.NewEmailService("email", srv.Client())
 
 	if err := srv.Run(); err != nil {
 		logger.Errorf("Run: %s", err)

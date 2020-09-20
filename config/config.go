@@ -63,11 +63,13 @@ type log struct {
 }
 
 type server struct {
+	Domain     string `yaml:"domain"`
 	Port       string `yaml:"port"`
 	AssetsPath string `yaml:"assets_path"`
 	Secret     string `yaml:"secret"`
 }
 
 type email struct {
+	User  string `json:"user"`
 	Token string `json:"token"`
 }
