@@ -15,4 +15,5 @@ server:
   secret: 123456
 
 email:
+  user:
   token:
