@@ -8,7 +8,12 @@ import (
 // v1
 func RegisterAPIV1(v1Group *gin.RouterGroup) {
 	v1Group.GET("", Home)
-	v1Group.Static("assets", config.Server().AssetsPath)
+
+	assetsGroup := v1Group.Group("assets")
+	assetsGroup.Use(VerifyPermissions)
+	{
+		assetsGroup.Static("", config.Server().AssetsPath)
+	}
 
 	// v1/videos
 	videosGroup := v1Group.Group("videos")
@@ -18,4 +23,8 @@ func RegisterAPIV1(v1Group *gin.RouterGroup) {
 		videosGroup.GET("", ListVideo)
 		videosGroup.GET(":id", GetVideo)
 	}
+}
+
+// todo: 验证权限
+func VerifyPermissions(c *gin.Context) {
 }
