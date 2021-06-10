@@ -5,7 +5,7 @@ import (
 
 	log "github.com/micro/micro/v3/service/logger"
 
-	auth "auth/proto"
+	auth "github.com/jdxj/share/auth/proto"
 )
 
 type Auth struct{}

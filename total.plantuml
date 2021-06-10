@@ -1,0 +1,19 @@
+@startuml
+interface Service {
+	Name() string
+	Init(...Option)
+	Options() Options
+	Client() client.Client
+	Server() server.Server
+	Run() error
+	String() string
+}
+class service
+
+package micro {
+    Service <-- service
+}
+
+
+
+@enduml

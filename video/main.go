@@ -8,6 +8,7 @@ import (
 	user "github.com/jdxj/share/user/proto"
 	"github.com/jdxj/share/video/remote"
 	"github.com/jdxj/share/video/server"
+
 	"github.com/micro/micro/v3/service"
 )
 

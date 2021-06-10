@@ -1,37 +1,47 @@
 package main
 
 import (
-	"github.com/jdxj/logger"
-	"github.com/jdxj/share/config"
+	"log"
+
+	//"github.com/asim/go-micro/plugins/transport/grpc/v3"
+	"github.com/asim/go-micro/v3"
+	"github.com/asim/go-micro/v3/broker"
+
 	"github.com/jdxj/share/email/handler"
-	pb "github.com/jdxj/share/email/proto"
-	"github.com/micro/micro/v3/service"
+	email "github.com/jdxj/share/email/proto"
 )
 
 func main() {
-	// Create service
-	srv := service.New(
-		service.Name("email"),
-		service.Version("latest"),
+	service := micro.NewService(
+		micro.Name("email"),
+		//micro.Transport(grpc.NewTransport()),
 	)
-	srv.Init(
-		service.BeforeStart(initBase),
-	)
+	service.Init()
+	err := email.RegisterEmailHandler(service.Server(), &handler.Email{})
+	if err != nil {
+		log.Fatalf("%s\n", err)
+	}
 
-	// Register handler
-	pb.RegisterEmailHandler(srv.Server(), new(handler.Email))
+	//err = service.Options().Broker.Init()
+	//if err != nil {
+	//	log.Fatalf("Init: %s\n", err)
+	//}
+	//err = service.Options().Broker.Connect()
+	//if err != nil {
+	//	log.Fatalf("Connect: %s\n", err)
+	//}
+	//_, err = service.Options().Broker.Subscribe("testbroker", Handle)
+	//if err != nil {
+	//	log.Fatalf("Subscribe: %s\n", err)
+	//}
 
-	// Run service
-	if err := srv.Run(); err != nil {
-		logger.Errorf("srv.Run: %s", err)
+	err = service.Run()
+	if err != nil {
+		log.Fatalf("%s\n", err)
 	}
 }
 
-func initBase() error {
-	err := config.Init("/home/jdxj/workspace/share/config.yaml")
-	if err != nil {
-		return err
-	}
-	logger.NewPathMode(config.Log().Path, config.Mode())
+func Handle(event broker.Event) error {
+	log.Printf("header: %v\n", event.Message().Header)
 	return nil
 }
